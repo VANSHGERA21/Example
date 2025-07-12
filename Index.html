@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Music Visualizer</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(45deg, #1a1a2e, #16213e, #0f3460);
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .visualizer-container {
+            width: 500px;
+            height: 700px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 30px;
+            position: relative;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: container-pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes container-pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 25px 50px rgba(0,0,0,0.3); }
+            50% { transform: scale(1.02); box-shadow: 0 30px 60px rgba(0,0,0,0.4); }
+        }
+
+        .header {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            animation: text-glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes text-glow {
+            0% { text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+            100% { text-shadow: 0 2px 20px rgba(255,255,255,0.3); }
+        }
+
+        .circular-visualizer {
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: rotate-slow 20s linear infinite;
+        }
+
+        @keyframes rotate-slow {
+            0% { transform: translateX(-50%) rotate(0deg); }
+            100% { transform: translateX(-50%) rotate(360deg); }
+        }
+
+        .circle-bars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .circle-bar {
+            position: absolute;
+            width: 4px;
+            background: linear-gradient(to top, #ff6b6b, #4ecdc4, #45b7d1);
+            border-radius: 2px;
+            transform-origin: 50% 150px;
+            animation: circle-wave 1.5s ease-in-out infinite;
+        }
+
+        @keyframes circle-wave {
+            0%, 100% { height: 20px; opacity: 0.6; }
+            50% { height: 60px; opacity: 1; }
+        }
+
+        .person-avatar {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(145deg, #a855f7, #8b5cf6);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: avatar-float 3s ease-in-out infinite;
+        }
+
+        @keyframes avatar-float {
+            0%, 100% { transform: translate(-50%, -50%) translateY(0px); }
+            50% { transform: translate(-50%, -50%) translateY(-10px); }
+        }
+
+        .person-figure {
+            position: relative;
+            width: 80px;
+            height: 90px;
+        }
+
+        .person-head {
+            width: 45px;
+            height: 45px;
+            background: #fbbf24;
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 3px solid #f59e0b;
+        }
+
+        .person-hair {
+            width: 50px;
+            height: 25px;
+            background: #8b4513;
+            border-radius: 25px 25px 0 0;
+            position: absolute;
+            top: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .person-body {
+            width: 50px;
+            height: 35px;
+            background: #10b981;
+            border-radius: 15px;
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 2px solid #059669;
+        }
+
+        .person-collar {
+            width: 30px;
+            height: 15px;
+            background: white;
+            border-radius: 8px;
+            position: absolute;
+            top: 35px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .headphones {
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 65px;
+            height: 55px;
+            border: 5px solid #374151;
+            border-radius: 50px;
+            background: transparent;
+            animation: headphone-pulse 2s ease-in-out infinite;
+        }
+
+        .headphones::before,
+        .headphones::after {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: #374151;
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .headphones::before { left: -2px; }
+        .headphones::after { right: -2px; }
+
+        @keyframes headphone-pulse {
+            0%, 100% { border-color: #374151; box-shadow: 0 0 0 0 rgba(55, 65, 81, 0.4); }
+            50% { border-color: #4f46e5; box-shadow: 0 0 0 10px rgba(79, 70, 229, 0); }
+        }
+
+        .spectrum-analyzer {
+            position: absolute;
+            bottom: 200px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 400px;
+            height: 80px;
+            display: flex;
+            align-items: end;
+            justify-content: center;
+            gap: 3px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .spectrum-bar {
+            width: 8px;
+            background: linear-gradient(to top, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+            border-radius: 4px;
+            animation: spectrum-dance 1s ease-in-out infinite;
+        }
+
+        @keyframes spectrum-dance {
+            0%, 100% { transform: scaleY(0.3); }
+            50% { transform: scaleY(1); }
+        }
+
+        .player-controls {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            background: rgba(255,255,255,0.2);
+            padding: 15px 25px;
+            border-radius: 25px;
+            backdrop-filter: blur(15px);
+        }
+
+        .control-button {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(145deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            font-size: 18px;
+            border: 2px solid rgba(255,255,255,0.3);
+            animation: button-glow 3s ease-in-out infinite;
+        }
+
+        .control-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .play-button {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(145deg, #ff6b6b, #ee5a24);
+        }
+
+        @keyframes button-glow {
+            0%, 100% { box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+            50% { box-shadow: 0 10px 30px rgba(255,255,255,0.1); }
+        }
+
+        .volume-waves {
+            position: absolute;
+            top: 50%;
+            right: 30px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .wave-line {
+            width: 40px;
+            height: 3px;
+            background: white;
+            border-radius: 2px;
+            animation: wave-pulse 2s ease-in-out infinite;
+        }
+
+        .wave-line:nth-child(1) { animation-delay: 0s; }
+        .wave-line:nth-child(2) { animation-delay: 0.2s; }
+        .wave-line:nth-child(3) { animation-delay: 0.4s; }
+        .wave-line:nth-child(4) { animation-delay: 0.6s; }
+
+        @keyframes wave-pulse {
+            0%, 100% { opacity: 0.3; transform: scaleX(0.5); }
+            50% { opacity: 1; transform: scaleX(1); }
+        }
+
+        .brand-text {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            animation: brand-pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes brand-pulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; transform: translateX(-50%) scale(1.05); }
+        }
+
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            animation: particle-float 6s ease-in-out infinite;
+        }
+
+        .particle:nth-child(1) { left: 10%; top: 20%; animation-delay: 0s; }
+        .particle:nth-child(2) { left: 80%; top: 30%; animation-delay: 1s; }
+        .particle:nth-child(3) { left: 20%; top: 70%; animation-delay: 2s; }
+        .particle:nth-child(4) { left: 90%; top: 80%; animation-delay: 3s; }
+        .particle:nth-child(5) { left: 50%; top: 10%; animation-delay: 4s; }
+
+        @keyframes particle-float {
+            0%, 100% { transform: translateY(0px); opacity: 0.3; }
+            50% { transform: translateY(-30px); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="visualizer-container">
+        <div class="particles">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+        
+        <div class="header">MUSIC VISUALIZER</div>
+        
+        <div class="circular-visualizer">
+            <div class="circle-bars">
+                <!-- Generate circle bars with JavaScript for better control -->
+            </div>
+            
+            <div class="person-avatar">
+                <div class="person-figure">
+                    <div class="person-hair"></div>
+                    <div class="person-head"></div>
+                    <div class="person-collar"></div>
+                    <div class="person-body"></div>
+                    <div class="headphones"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="spectrum-analyzer">
+            <!-- Generate spectrum bars -->
+        </div>
+        
+        <div class="player-controls">
+            <div class="control-button">⏮</div>
+            <div class="control-button play-button">▶</div>
+            <div class="control-button">⏭</div>
+        </div>
+        
+        <div class="volume-waves">
+            <div class="wave-line"></div>
+            <div class="wave-line"></div>
+            <div class="wave-line"></div>
+            <div class="wave-line"></div>
+        </div>
+        
+        <div class="brand-text">Vanshgera • follow for more</div>
+    </div>
+
+    <script>
+        // Generate circular visualizer bars
+        const circularBars = document.querySelector('.circle-bars');
+        for (let i = 0; i < 60; i++) {
+            const bar = document.createElement('div');
+            bar.className = 'circle-bar';
+            bar.style.transform = `rotate(${i * 6}deg)`;
+            bar.style.left = '50%';
+            bar.style.top = '50%';
+            bar.style.transformOrigin = '50% 150px';
+            bar.style.animationDelay = `${i * 0.05}s`;
+            circularBars.appendChild(bar);
+        }
+
+        // Generate spectrum analyzer bars
+        const spectrumAnalyzer = document.querySelector('.spectrum-analyzer');
+        for (let i = 0; i < 40; i++) {
+            const bar = document.createElement('div');
+            bar.className = 'spectrum-bar';
+            bar.style.height = Math.random() * 60 + 10 + 'px';
+            bar.style.animationDelay = `${i * 0.1}s`;
+            spectrumAnalyzer.appendChild(bar);
+        }
+
+        // Add click functionality to play button
+        document.querySelector('.play-button').addEventListener('click', function() {
+            this.innerHTML = this.innerHTML === '▶' ? '⏸' : '▶';
+        });
+    </script>
+</body>
+</html>
